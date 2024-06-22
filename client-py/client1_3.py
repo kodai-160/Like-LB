@@ -11,7 +11,7 @@ os.environ["NO_PROXY"] = "192.168.100.3"
 
 def generate_numbers(num_count):
     """指定された数のランダムな整数リストを生成"""
-    return [random.randint(100001, 1000000) for _ in range(num_count)]
+    return [random.randint(100000000000000, 1000000000000000) for _ in range(num_count)]
 
 def check_prime(server_address, number):
     """サーバーに素数判定をリクエストして、応答と処理時間を返す"""
@@ -38,8 +38,7 @@ def main():
                 "Number": number,
                 "IsPrime": 'T' if is_prime else 'F',
                 "ResponseTime": response_time,
-                "Server": server,
-                "Level": 3
+                "Server": server
             })
             print(f"Trial {trial + 1}, Number: {number}, Prime: {'T' if is_prime else 'F'}, Time: {response_time:.4f}s, Server: {server}")
 
@@ -53,7 +52,7 @@ def main():
     print(average_response_times)
 
     # データと平均応答時間をExcelファイルに保存
-    with pd.ExcelWriter('prime_checks_trials_single_server2-3.xlsx') as writer:
+    with pd.ExcelWriter('prime_checks_trials_single_server15-2.xlsx') as writer:
         df.to_excel(writer, sheet_name='Raw Data', index=False)
         average_response_times.to_excel(writer, sheet_name='Average Response Times', index=False)
 

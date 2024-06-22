@@ -5,13 +5,17 @@ import random
 import pandas as pd
 from isPrime import isPrime_pb2, isPrime_pb2_grpc
 
-# ログを非表示にする。詳細なログが必要な場合は"NONE"を"DEBUG"に変更
 os.environ["GRPC_VERBOSITY"] = "NONE"
 os.environ["NO_PROXY"] = "192.168.100.2,192.168.100.3"
 
 def generate_numbers(num_count):
-    """指定された数のランダムな整数リストを生成"""
-    return [random.randint(100000000000000, 1000000000000000) for _ in range(num_count)]
+    """大きな数と一桁の数字を生成する"""
+    numbers = []
+    for i in range(num_count // 2):
+        heavy = random.randint(1_000_000, 10_000_000)  # 処理が重い大きな数
+        light = random.randint(0, 9)  # 処理が軽い一桁の数字
+        numbers.extend([heavy, light])
+    return numbers
 
 def check_prime(server_address, number):
     """サーバーに素数判定をリクエストして、応答と処理時間を返す"""
@@ -23,7 +27,7 @@ def check_prime(server_address, number):
     return response.IsPrime, elapsed_time
 
 def main():
-    trials = 10  # 試行回数
+    trials = 10
     numbers_per_trial = 100
     servers = ["192.168.100.2:9000", "192.168.100.3:9000"]
     all_trials_results = []
@@ -32,7 +36,8 @@ def main():
         results = []
         numbers = generate_numbers(numbers_per_trial)
         for i, number in enumerate(numbers):
-            server = servers[i % 2]
+            # 大きな数はサーバ2に、小さな数はサーバ1に送る
+            server = servers[(i + 1) % 2]  # サーバの選択を逆にする
             is_prime, response_time = check_prime(server, number)
             results.append({
                 "Trial": trial + 1,
@@ -42,18 +47,11 @@ def main():
                 "Server": server
             })
             print(f"Trial {trial + 1}, Number: {number}, Prime: {'T' if is_prime else 'F'}, Time: {response_time:.4f}s, Server: {server}")
-
-        # この試行の結果を追加
         all_trials_results.extend(results)
 
-    # データをDataFrameに変換
     df = pd.DataFrame(all_trials_results)
-    # 平均応答時間を計算
     average_response_times = df.groupby(['Trial', 'Server'])['ResponseTime'].mean().reset_index()
-    print(average_response_times)
-
-    # データと平均応答時間をExcelファイルに保存
-    with pd.ExcelWriter('prime_checks_trials15.xlsx') as writer:
+    with pd.ExcelWriter('prime_checks_interleaved_light_heavy.xlsx') as writer:
         df.to_excel(writer, sheet_name='Raw Data', index=False)
         average_response_times.to_excel(writer, sheet_name='Average Response Times', index=False)
 

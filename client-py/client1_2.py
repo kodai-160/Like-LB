@@ -52,7 +52,7 @@ def main():
     print(average_response_times)
 
     # データと平均応答時間をExcelファイルに保存
-    with pd.ExcelWriter('prime_checks_trials_single_server11-1.xlsx') as writer:
+    with pd.ExcelWriter('prime_checks_trials_single_server15-1.xlsx') as writer:
         df.to_excel(writer, sheet_name='Raw Data', index=False)
         average_response_times.to_excel(writer, sheet_name='Average Response Times', index=False)
 
