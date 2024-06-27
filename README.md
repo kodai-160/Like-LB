@@ -35,6 +35,6 @@ ipvsadmを使用して、ロードバランサを構築
 - requirements.txt grpcを使用するために必要なもの
 
 ##### ネットワーク構成
-![ネットワーク構成](https://github.com/kodai-160/Like-LB/images/ネットワーク構成.png)
+![ネットワーク構成](https://github.com/kodai-160/Like-LB/tree/main/images/ネットワーク構成.png)
 
-![実験の様子](https://github.com/kodai-160/Like-LB/images/実験の様子.png)
+![実験の様子](https://github.com/kodai-160/Like-LB/tree/main/images/実験の様子.png)
